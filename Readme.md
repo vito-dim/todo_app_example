@@ -1,0 +1,1 @@
+Exercise with build and push of docker images to Dockerhub with GitActions
