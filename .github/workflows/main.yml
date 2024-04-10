@@ -12,6 +12,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Shorten SHA
+        id: shorten_sha
+        run: echo "::set-output name=short_sha::$(echo ${GITHUB_SHA} | cut -c1-7)"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         
@@ -30,13 +34,17 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: vidraxmax/frontend:latest, vidraxmax/frontend:${{ github.run_number}}
+          tags: vidraxmax/frontend:latest, vidraxmax/frontend:${{ steps.shorten_sha.outputs.short_sha }}-${{ github.run_number }}
 
   build-be:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Shorten SHA
+        id: shorten_sha
+        run: echo "::set-output name=short_sha::$(echo ${GITHUB_SHA} | cut -c1-7)"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -56,4 +64,4 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: vidraxmax/backend:latest, vidraxmax/backend:${{ github.run_number}}
+          tags: vidraxmax/backend:latest, vidraxmax/backend:${{ steps.shorten_sha.outputs.short_sha }}-${{ github.run_number }}
